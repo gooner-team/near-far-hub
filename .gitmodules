@@ -1,0 +1,6 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/gooner-team/near-far-hub-backend.git
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/gooner-team/near-far-hub-frontend.git
