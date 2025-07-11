@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - tire-network
+
+  # Laravel Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=tire_app
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+      - APP_ENV=local
+      - APP_DEBUG=true
+    depends_on:
+      - mysql
+    networks:
+      - tire-network
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: tire-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: tire_app
+      MYSQL_USER: tire_user
+      MYSQL_PASSWORD: secret
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - tire-network
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: tire-phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+    depends_on:
+      - mysql
+    networks:
+      - tire-network
+
+  # Nginx (Optional - for production-like setup)
+#  nginx:
+#    image: nginx:alpine
+#    container_name: tire-nginx
+#    ports:
+#      - "80:80"
+#    volumes:
+#      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+#      - ./backend/public:/var/www/html/public
+#    depends_on:
+#      - frontend
+#      - backend
+#    networks:
+#      - tire-network
+
+volumes:
+  mysql_data:
+
+networks:
+  tire-network:
+    driver: bridge
