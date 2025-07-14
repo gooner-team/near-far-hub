@@ -16,7 +16,7 @@ services:
     depends_on:
       - backend
     networks:
-      - tire-network
+      - api-network
 
   # Laravel Backend
   backend:
@@ -30,7 +30,7 @@ services:
     environment:
       - DB_HOST=mysql
       - DB_PORT=3306
-      - DB_DATABASE=tire_app
+      - DB_DATABASE=api
       - DB_USERNAME=root
       - DB_PASSWORD=secret
       - APP_ENV=local
@@ -38,29 +38,29 @@ services:
     depends_on:
       - mysql
     networks:
-      - tire-network
+      - api-network
 
   # MySQL Database
   mysql:
     image: mysql:8.0
-    container_name: tire-mysql
+    container_name: api-mysql
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: tire_app
-      MYSQL_USER: tire_user
+      MYSQL_DATABASE: api
+      MYSQL_USER: sail
       MYSQL_PASSWORD: secret
     volumes:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql/init:/docker-entrypoint-initdb.d
     networks:
-      - tire-network
+      - api-network
 
   # phpMyAdmin
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
-    container_name: tire-phpmyadmin
+    container_name: api-phpmyadmin
     ports:
       - "8080:80"
     environment:
@@ -72,12 +72,12 @@ services:
     depends_on:
       - mysql
     networks:
-      - tire-network
+      - api-network
 
   # Nginx (Optional - for production-like setup)
 #  nginx:
 #    image: nginx:alpine
-#    container_name: tire-nginx
+#    container_name: api-nginx
 #    ports:
 #      - "80:80"
 #    volumes:
@@ -87,11 +87,11 @@ services:
 #      - frontend
 #      - backend
 #    networks:
-#      - tire-network
+#      - api-network
 
 volumes:
   mysql_data:
 
 networks:
-  tire-network:
+  api-network:
     driver: bridge
