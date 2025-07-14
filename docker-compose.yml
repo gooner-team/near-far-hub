@@ -13,10 +13,15 @@ services:
       - /app/node_modules
     environment:
       - REACT_APP_API_URL=http://localhost:8000
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - FAST_REFRESH=true
     depends_on:
       - backend
     networks:
       - api-network
+    stdin_open: true
+    tty: true
 
   # Laravel Backend
   backend:
