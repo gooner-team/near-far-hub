@@ -24,7 +24,8 @@ Before you begin, ensure you have the following installed:
 Since this project uses Git submodules, you need to clone with the `--recursive` flag:
 
 ```bash
-git clone --recursive https://github.com/your-username/near-far-hub.git
+git clone --recursive https://github.com/gooner-team/near-far-hub.git
+
 cd near-far-hub
 ```
 
